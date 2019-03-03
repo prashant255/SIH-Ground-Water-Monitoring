@@ -161,6 +161,11 @@ export class MonitoringComponent implements OnInit {
   handleCityChange(selectedCity) {
     console.log(this.selectedCity);
     this.checkUsageDefaulters();
+      this.monitordbService.nocValidityCity(this.selectedState, this.selectedCity).subscribe((response) => {
+      this.expcount = response[0].value
+      this.renewcount = response[1].value
+      this.safecount = response[2].value
+    });
   }
 
   checkUsageDefaulters() {

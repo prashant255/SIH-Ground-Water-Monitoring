@@ -4,7 +4,6 @@ const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const express = require('express');
 const uuidv4 = require('uuid/v4');
-const moment = require('moment');
 const app = express();
 
 openSessions = {}; // To hold open sessions
@@ -358,9 +357,15 @@ app.get('/nocValidity', (req, res) => {
 					safeCount = 0,
 					renewCount = 0;
 				for (var i = 0; i < docs.length; i++) {
-					var d1 = moment(`${docs[i].date.year}-${docs[i].date.month}-${docs[i].date.day}`);
-					var d2 = moment();
-					var days = d2.diff(d1, 'days');
+					// var d1 = moment(`${docs[i].date.day}-${docs[i].date.month}-${docs[i].date.year}`);
+					// var d2 = moment();
+					// var days = d2.diff(d1, 'days');
+
+					var d1 = new Date(`${docs[i].date.day}/${docs[i].date.month}/${docs[i].date.year}`);
+					var d2 = new Date();
+					var timeDiff = Math.abs(d2.getTime() - d1.getTime());
+					var days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+					
 					if (days >= 915 && days < 1095) {
 						renewCount++;
 					} else if (days >= 1095) {
@@ -369,7 +374,6 @@ app.get('/nocValidity', (req, res) => {
 						safeCount++;
 					}
 				}
-
 				var nocValidityArr = [{
 						property: 'expiredCount',
 						value: expiredCount
@@ -385,10 +389,9 @@ app.get('/nocValidity', (req, res) => {
 				];
 				res.json(nocValidityArr);
 			}
-
 		});
-
 });
+
 
 app.get('/getQuantum', (req, res) => {
 	db.getDB().collection(collection).find({})
@@ -581,12 +584,12 @@ app.get('/getNOCIndustry/monthly/:uniq', (req, res) => {
 							name: `${Month[docs[i].month_counter-1]} ${docs[i].current_year}`,
 							value: docs[i].consumption
 						};
-						// var temp2 = {
-						// 	name: `${docs[i].start_day_number}-0${docs[i].month_counter}`,
-						// 	value: docs[j].consumption
-						// };
-						industryArr[0].series.push(temp1);
-						// industryArr[1].series.push(temp2);
+						var temp2 = {
+							name: `${Month[docs[i].month_counter-1]} ${docs[i].current_year}`,
+							value: docs[j].consumption
+						};
+						industryArr[0].series.push(temp2);
+						industryArr[1].series.push(temp1);
 						counter++;
 					}
 				}
@@ -594,7 +597,6 @@ app.get('/getNOCIndustry/monthly/:uniq', (req, res) => {
 			}
 		});
 });
-
 app.get('/getIndustryInfo/:uniq', (req, res) => {
 	var Uniq = req.params.uniq;
 	db.getDB().collection('noc').find({
@@ -723,7 +725,7 @@ app.get('/groundLevel/:uniq', (req,res)=>{
 				var Month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 				var sendJson = [
 					{
-						name : 'Week',
+						name : 'Value',
 						series : []
 					}
 				];
@@ -735,6 +737,93 @@ app.get('/groundLevel/:uniq', (req,res)=>{
 					sendJson[0].series.push(JsonData);
 				}
 				res.json(sendJson);
+			}
+		});
+});
+
+app.get('/nocValidity/:state', (req, res) => {
+	db.getDB().collection(collection).find({
+		state : req.params.state	
+	}).toArray((err, docs) => {
+			if (err)
+				console.log(err);
+			else {
+				var expiredCount = 0,
+					safeCount = 0,
+					renewCount = 0;
+				for (var i = 0; i < docs.length; i++) {
+					// var d1 = moment(`${docs[i].date.day}-${docs[i].date.month}-${docs[i].date.year}`, 'DD-MM-YYYY');
+					// var d2 = moment('DD-MM-YYYY');
+
+					var d1 = new Date(`${docs[i].date.day}/${docs[i].date.month}/${docs[i].date.year}`);
+					var d2 = new Date();
+					var timeDiff = Math.abs(d2.getTime() - d1.getTime());
+					var days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+					
+					if (days >= 915 && days < 1095) {
+						renewCount++;
+					} else if (days >= 1095) {
+						expiredCount++;
+					} else {
+						safeCount++;
+					}
+				}
+				var nocValidityArr = [{
+						property: 'expiredCount',
+						value: expiredCount
+					},
+					{
+						property: 'renewCount',
+						value: renewCount
+					},
+					{
+						property: 'safeCount',
+						value: safeCount
+					}
+				];
+				res.json(nocValidityArr);
+			}
+		});
+});
+
+app.get('/nocValidity/:state/:city', (req, res) => {
+	db.getDB().collection(collection).find(
+		{state : req.params.state},
+		{city : req.params.city}	
+	).toArray((err, docs) => {
+			if (err)
+				console.log(err);
+			else {
+				var expiredCount = 0,
+					safeCount = 0,
+					renewCount = 0;
+				for (var i = 0; i < docs.length; i++) {
+					var d1 = new Date(`${docs[i].date.day}/${docs[i].date.month}/${docs[i].date.year}`);
+					var d2 = new Date();
+					var timeDiff = Math.abs(d2.getTime() - d1.getTime());
+					var days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+					if (days >= 915 && days < 1095) {
+						renewCount++;
+					} else if (days >= 1095) {
+						expiredCount++;
+					} else {
+						safeCount++;
+					}
+				}
+				var nocValidityArr = [{
+						property: 'expiredCount',
+						value: expiredCount
+					},
+					{
+						property: 'renewCount',
+						value: renewCount
+					},
+					{
+						property: 'safeCount',
+						value: safeCount
+					}
+				];
+				res.json(nocValidityArr);
 			}
 		});
 });

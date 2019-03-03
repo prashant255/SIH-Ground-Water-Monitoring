@@ -33,6 +33,7 @@ export class ComparisionComponent implements OnInit {
   reuse2: any = [];
   reuse3: any = [];
   reuse4: any = [];
+  reuse5: any = [];
   view: any[] = [600, 250];
   view34: any[] = [300, 300];
 
@@ -91,6 +92,10 @@ export class ComparisionComponent implements OnInit {
       this.reuse4 = response;
     });
 
+    this.nocService.groundWaterLevel(this.NOCid).subscribe((response7) => {
+      console.log(response7);
+      this.reuse5 = response7;
+    });
 
   }
 

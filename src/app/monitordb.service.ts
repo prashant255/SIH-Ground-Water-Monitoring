@@ -44,4 +44,13 @@ export class MonitordbService {
   weeklyWaterUsage(nocid) {
     return this.http.get('http://localhost:8100/getWeeklyWaterUsage/'+nocid);
   }
+
+  groundWaterLevel(nocid) {
+    return this.http.get('http://localhost:8100/groundLevel/'+nocid);
+  }
+
+  nocValidityCity(state, city) {
+    return this.http.get('http://localhost:8100/nocValidity/'+state+'/'+city);
+  }
+
 }
