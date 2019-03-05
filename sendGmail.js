@@ -10,7 +10,7 @@ const SCOPES = ['https://www.googleapis.com/auth/gmail.send'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-var to = 'contact@technobuz.in';
+var to = 'shrutidphadke@gmail.com';
 var subject = 'warning / alert';
 var message = 'Hello, this is to bring to your attention that your water consumption is exceeding the expected limits. Please take necessary action. Regards, CGWA';
 

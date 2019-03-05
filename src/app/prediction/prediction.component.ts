@@ -24,6 +24,7 @@ export class PredictionComponent implements OnInit {
   yAxisLabel = 'Water Extracted (meter cube)';
   xAxisLabel1 = 'Day';
   yAxisLabel2 = 'Ground water level (mbgl)';
+  autoScale = true;
 
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']

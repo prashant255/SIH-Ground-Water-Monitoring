@@ -15,7 +15,8 @@
   [showYAxisLabel]="showYAxisLabel"
   [xAxisLabel]="xAxisLabel"
   [yAxisLabel]="yAxisLabel"
-  (select)="onSelect($event)">
+  (select)="onSelect($event)"
+  >
 </ngx-charts-bar-vertical>
 
 <ngx-charts-line-chart
@@ -27,6 +28,7 @@
     [legend]="false"
     [showXAxisLabel]="showXAxisLabel"
     [showYAxisLabel]="showYAxisLabel"
+    [autoScale]="autoScale"
     [xAxisLabel]="xAxisLabel"
     [yAxisLabel]="yAxisLabel"
     [showRefLines]="true"
