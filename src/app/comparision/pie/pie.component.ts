@@ -47,5 +47,9 @@ export class PieComponent implements OnInit {
   ngOnInit() {
   }
 
+  onSelect(data): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  }
+
 }
 

@@ -15,7 +15,7 @@ export interface Tile {
   styleUrls: ['./comparision.component.scss']
 })
 export class ComparisionComponent implements OnInit {
-  @ViewChild(PieComponent) pie: PieComponent;
+  @ViewChild(PieComponent) pie !: PieComponent;
 
   NOCid: number;
   tiles: Tile[] = [
